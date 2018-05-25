@@ -86,6 +86,12 @@ class ExperimentBranchBuilder:
                                '~-': re.compile(r'([a-zA-Z_]+)~-'),
                                '~>': re.compile(r'([a-zA-Z_]+)~>([a-zA-Z_]+)')}
 
+        # TODO test this shit
+        self.cl_keywords_errors = {'-+': None,
+                                   '~-': None,
+                                   '~>': lambda x: ValueError("Renaming requires a new name. "
+                                                              "You provided: '{}'".format(x))}
+
         self.user_args = self.conflicting_config['metadata']['user_args']
         self.experiment_args = self.experiment_config['metadata']['user_args']
 
@@ -140,8 +146,11 @@ class ExperimentBranchBuilder:
     def _solve_commandline_conflicts(self):
         for keyword in self.commandline_keywords:
             for dimension in self.commandline_keywords[keyword]:
-                value = self.cl_keywords_re[keyword].findall(dimension)
-                self.cl_keywords_functions[keyword](*value)
+                try:
+                    value = self.cl_keywords_re[keyword].findall(dimension)
+                    self.cl_keywords_functions[keyword](*value)
+                except TypeError as exc:
+                    raise self.cl_keywords_errors[keyword](dimension) from exc
 
     # API section
 
