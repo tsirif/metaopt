@@ -279,6 +279,7 @@ class TestSpaceBuilder(object):
                     "--arch2~choices({'lala': 0.2, 'yolo': 0.8})"]
         space = spacebuilder.build_from(cmd_args)
         print(space)
+        assert spacebuilder.userconfig == yaml_sample_path
         assert len(space) == 8
         assert '/yolo' in space
         assert '/arch2' in space
@@ -378,6 +379,7 @@ class TestSpaceBuilder(object):
             {'name': '/something-same', 'type': 'categorical', 'value': '3'}])
         output_file = str(tmpdir.join("output.json"))
         cmd_inst = spacebuilder.build_to(output_file, trial)
+        assert spacebuilder.userconfig == json_sample_path
         assert cmd_inst == ['--config=' + output_file]
         output_data = json_converter.parse(output_file)
         assert output_data == {'yo': 5, 'training': {'lr0': 0.032, 'mbs': 64},
@@ -406,6 +408,7 @@ class TestSpaceBuilder(object):
             {'name': '/something-same', 'type': 'categorical', 'value': '3'}])
         output_file = str(tmpdir.join("output.json"))
         cmd_inst = spacebuilder.build_to(output_file, trial)
+        assert spacebuilder.userconfig == json_sample_path
         assert cmd_inst == ["--seed=555", "-yolo=-2.4"] +\
             ['--config=' + output_file] +\
             ["--arch1=choices({'lala': 0.2, 'yolo': 0.8})", "--arch2=yolo"]
