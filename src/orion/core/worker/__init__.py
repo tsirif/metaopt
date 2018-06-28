@@ -11,11 +11,24 @@
 """
 import logging
 
+import pkg_resources
+
 from orion.core.io.database import Database
-from orion.core.worker.consumer import Consumer
 from orion.core.worker.producer import Producer
 
 log = logging.getLogger(__name__)
+
+
+try:
+    if pkg_resources.working_set.find(pkg_resources.Requirement('pyzmq>=15')):
+        from orion.core.worker.consumer import AsyncConsumer as Consumer
+    else:
+        from orion.core.worker.consumer import Consumer
+except pkg_resources.VersionConflict as exc:
+    log.warning("Package for `AsyncConsumer` exists, but it has incorrect version: %s\n"
+                "Please update ``pyzmq`` to version >= 15.",
+                exc)
+    from orion.core.worker.consumer import Consumer
 
 
 def workon(experiment):
