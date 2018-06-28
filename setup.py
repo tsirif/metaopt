@@ -70,7 +70,10 @@ setup_args = dict(
     install_requires=['PyYAML', 'pymongo>=3', 'numpy', 'scipy'],
     tests_require=tests_require,
     setup_requires=['setuptools', 'pytest-runner>=2.0,<3dev'],
-    extras_require=dict(test=tests_require),
+    extras_require={
+        'test': tests_require,
+        'dynamic': 'pyzmq>=15',
+        },
     # "Zipped eggs don't play nicely with namespace packaging"
     # from https://github.com/pypa/sample-namespace-packages
     zip_safe=False
